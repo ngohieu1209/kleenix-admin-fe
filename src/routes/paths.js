@@ -35,30 +35,11 @@ export const paths = {
       root: `${ROOTS.DASHBOARD}/booking`,
       details: (id) => `${ROOTS.DASHBOARD}/booking/${id}`,
     },
-    activationCode: {
-      root: `${ROOTS.DASHBOARD}/activation-code`,
-      new: `${ROOTS.DASHBOARD}/activation-code/new`,
-      details: (id) => `${ROOTS.DASHBOARD}/activation-code/${id}`,
-    },
-    contest: {
-      root: `${ROOTS.DASHBOARD}/contest`,
-      new: `${ROOTS.DASHBOARD}/contest/new`,
-      details: (id) => `${ROOTS.DASHBOARD}/contest/${id}`,
-      edit: (id) => `${ROOTS.DASHBOARD}/contest/${id}/edit`,
-    },
-    round: {
-      root: `${ROOTS.DASHBOARD}/round`,
-      new: `${ROOTS.DASHBOARD}/round/new`,
-      details: (id) => `${ROOTS.DASHBOARD}/round/${id}`,
-    },
-    academicTranscript: {
-      root: `${ROOTS.DASHBOARD}/academic-transcript`,
-      details: (id) => `${ROOTS.DASHBOARD}/academic-transcript/${id}`,
-    },
-    syncData: {
-      testOutline: `${ROOTS.DASHBOARD}/sync-data/test-outline`,
-      round: `${ROOTS.DASHBOARD}/sync-data/round`,
-      testFormGroup: `${ROOTS.DASHBOARD}/sync-data/test-form-group`,
+    houseWorker: {
+      root: `${ROOTS.DASHBOARD}/house-worker`,
+      new: `${ROOTS.DASHBOARD}/house-worker/new`,
+      details: (id) => `${ROOTS.DASHBOARD}/house-worker/${id}`,
+      edit: (id) => `${ROOTS.DASHBOARD}/house-worker/${id}/edit`,
     },
   },
 };

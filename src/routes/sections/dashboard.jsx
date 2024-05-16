@@ -21,6 +21,11 @@ const ExtraServiceDetailsPage = lazy(() => import('src/pages/dashboard/extra-ser
 // BOOKING
 const BookingListPage = lazy(() => import('src/pages/dashboard/booking/list'));
 const BookingDetailsPage = lazy(() => import('src/pages/dashboard/booking/details'));
+// HOUSE WORKER
+const HouseWorkerListPage = lazy(() => import('src/pages/dashboard/house-worker/list'));
+const HouseWorkerCreatePage = lazy(() => import('src/pages/dashboard/house-worker/new'));
+const HouseWorkerEditPage = lazy(() => import('src/pages/dashboard/house-worker/edit'));
+const HouseWorkerDetailsPage = lazy(() => import('src/pages/dashboard/house-worker/details'));
 // ----------------------------------------------------------------------
 
 export const dashboardRoutes = [
@@ -66,6 +71,16 @@ export const dashboardRoutes = [
           { element: <BookingListPage />, index: true },
           { path: 'list', element: <BookingListPage /> },
           { path: ':id', element: <BookingDetailsPage /> },
+        ],
+      },
+      {
+        path: 'house-worker',
+        children: [
+          { element: <HouseWorkerListPage />, index: true },
+          { path: 'list', element: <HouseWorkerListPage /> },
+          { path: ':id', element: <HouseWorkerDetailsPage /> },
+          { path: 'new', element: <HouseWorkerCreatePage /> },
+          { path: ':id/edit', element: <HouseWorkerEditPage /> },
         ],
       },
     ],

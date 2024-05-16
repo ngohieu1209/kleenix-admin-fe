@@ -40,7 +40,6 @@ export default function ServiceDetailsContent({ service }) {
 
   const handleEdit = useCallback(
     (id) => {
-      console.log('winter-summer', id)
       quickEdit.onTrue();
     },
     [quickEdit]

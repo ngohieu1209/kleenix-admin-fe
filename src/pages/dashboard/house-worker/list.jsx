@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 
-import { ServiceListView } from 'src/sections/service/view';
+import { HouseWorkerListView } from 'src/sections/house-worker/view';
 
 // ----------------------------------------------------------------------
 
@@ -11,7 +11,7 @@ export default function HouseWorkerListPage() {
         <title> Dashboard: House Worker List</title>
       </Helmet>
 
-      <ServiceListView />
+      <HouseWorkerListView />
     </>
   );
 }

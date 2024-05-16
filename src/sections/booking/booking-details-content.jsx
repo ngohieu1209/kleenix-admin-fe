@@ -3,20 +3,13 @@ import PropTypes from 'prop-types';
 import { addMinutes } from 'date-fns';
 
 import Box from '@mui/material/Box';
-import Chip from '@mui/material/Chip';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import Avatar from '@mui/material/Avatar';
-import Tooltip from '@mui/material/Tooltip';
 import Button from '@mui/material/Button';
-
-import { useBoolean } from 'src/hooks/use-boolean';
-
-import { paths } from 'src/routes/paths';
-import { useRouter } from 'src/routes/hooks';
 
 import { ASSETS_API } from 'src/config-global';
 
@@ -35,14 +28,6 @@ export default function BookingDetailsContent({ booking }) {
   const { service } = bookingPackage[0].package;
 
   const expectedEndTime = addMinutes(new Date(dateTime), duration);
-
-  const router = useRouter();
-
-  const quickEdit = useBoolean();
-
-  const handleNewPackage = useCallback(() => {
-    quickEdit.onTrue();
-  },[quickEdit]);
 
   const renderContent = (
     <Stack component={Card} spacing={3} sx={{ p: 3 }}>
@@ -214,17 +199,15 @@ export default function BookingDetailsContent({ booking }) {
 
 
   return (
-    <>
-      <Grid container spacing={3}>
-        <Grid xs={12} md={7}>
-          {renderContent}
-        </Grid>
-
-        <Grid xs={12} md={5}>
-          {renderSecondary}
-        </Grid>
+    <Grid container spacing={3}>
+      <Grid xs={12} md={7}>
+        {renderContent}
       </Grid>
-    </>
+
+      <Grid xs={12} md={5}>
+        {renderSecondary}
+      </Grid>
+    </Grid>
   );
 }
 

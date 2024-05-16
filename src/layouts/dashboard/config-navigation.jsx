@@ -68,6 +68,12 @@ export function useNavData() {
             path: paths.dashboard.booking.root,
             icon: ICONS.cleaningCart,
           },
+          // HOUSE WORKER
+          {
+            title: t('Người giúp việc'),
+            path: paths.dashboard.houseWorker.root,
+            icon: ICONS.cleaningCart,
+          },
         ],
       },
     ],

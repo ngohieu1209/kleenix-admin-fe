@@ -7,11 +7,10 @@ import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 import ListItemText from '@mui/material/ListItemText';
 import Avatar from '@mui/material/Avatar';
-import Checkbox from '@mui/material/Checkbox';
 
 import { useBoolean } from 'src/hooks/use-boolean';
 
-import { fCurrency } from 'src/utils/format-number';
+import { fDate } from 'src/utils/format-time';
 
 import Iconify from 'src/components/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
@@ -20,8 +19,8 @@ import { ASSETS_API } from 'src/config-global';
 
 // ----------------------------------------------------------------------
 
-export default function ExtraServiceTableRow({ row, onViewRow, onEditRow, onDeleteRow }) {
-  const { name, icon, description, activate, duration, price } = row;
+export default function HouseWorkerTableRow({ row, onViewRow, onEditRow, onDeleteRow }) {
+  const { name, username, age, gender, createdAt } = row;
 
   const confirm = useBoolean();
 
@@ -32,22 +31,33 @@ export default function ExtraServiceTableRow({ row, onViewRow, onEditRow, onDele
       <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
         <Avatar
           alt={name}
-          src={`${ASSETS_API}/${icon}`}
+          // src={`${ASSETS_API}/${icon}`}
           variant='rounded'
           sx={{ mr: 2 }}
         />
         <ListItemText
           primary={name}
+          secondary={username}
           primaryTypographyProps={{
             typography: 'body2',
           }}
+          secondaryTypographyProps={{
+            component: 'span',
+          }}
         />
       </TableCell>
-      <TableCell sx={{ whiteSpace: 'break-spaces' }}>{description || 'Không có miêu tả'}</TableCell>
-      <TableCell align="center">{duration} phút</TableCell>
-      <TableCell align="center">{fCurrency(price)}</TableCell>
-      <TableCell sx={{ whiteSpace: 'nowrap' }} align="center">
-        <Checkbox checked={activate} />
+      <TableCell sx={{ textAlign: 'center' }}>{age}</TableCell>
+      <TableCell>{gender === "FEMALE" ? 'Nữ' : 'Nam'}</TableCell>
+      <TableCell>
+        <ListItemText
+          primary={fDate(createdAt)}
+          secondary={fDate(createdAt, 'p')}
+          primaryTypographyProps={{ typography: 'body2', noWrap: true }}
+          secondaryTypographyProps={{
+            mt: 0.5,
+            component: 'span',
+          }}
+        />
       </TableCell>
       <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
         <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
@@ -114,7 +124,7 @@ export default function ExtraServiceTableRow({ row, onViewRow, onEditRow, onDele
   );
 }
 
-ExtraServiceTableRow.propTypes = {
+HouseWorkerTableRow.propTypes = {
   onDeleteRow: PropTypes.func,
   onViewRow: PropTypes.func,
   onEditRow: PropTypes.func,
