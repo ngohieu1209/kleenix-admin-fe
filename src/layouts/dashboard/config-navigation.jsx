@@ -36,6 +36,9 @@ const ICONS = {
   dashboard: icon('ic_dashboard'),
   house: image('house'),
   cleaningCart: image('cleaning-cart'),
+  calendar: image('calendar'),
+  broom: image('broom'),
+  promotion: image('promotion'),
 };
 
 // ----------------------------------------------------------------------
@@ -66,13 +69,19 @@ export function useNavData() {
           {
             title: t('Theo dõi đặt lịch'),
             path: paths.dashboard.booking.root,
-            icon: ICONS.cleaningCart,
+            icon: ICONS.calendar,
           },
           // HOUSE WORKER
           {
             title: t('Người giúp việc'),
             path: paths.dashboard.houseWorker.root,
-            icon: ICONS.cleaningCart,
+            icon: ICONS.broom,
+          },
+          // PROMOTION
+          {
+            title: t('Khuyến mãi'),
+            path: paths.dashboard.promotion.root,
+            icon: ICONS.promotion,
           },
         ],
       },

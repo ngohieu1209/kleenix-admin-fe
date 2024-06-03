@@ -42,6 +42,24 @@ export function useGetHouseWorker(houseWorkerId) {
   return memoizedValue;
 }
 
+export function useGetListAssignment(houseWorkerId) {
+  const URL = houseWorkerId ? `${endpoints.houseWorker.assignment}/${houseWorkerId}` : '';
+
+  const { data, isLoading, error, isValidating } = useSWR(URL, fetcher);
+
+  const memoizedValue = useMemo(
+    () => ({
+      assignments: data?.result || [],
+      assignmentsLoading: isLoading,
+      assignmentsError: error,
+      assignmentsValidating: isValidating,
+    }),
+    [data?.result, error, isLoading, isValidating]
+  );
+
+  return memoizedValue;
+}
+
 export async function createHouseWorker(eventData) {
   const URLcreate = endpoints.houseWorker.new;
   const formData = new FormData();

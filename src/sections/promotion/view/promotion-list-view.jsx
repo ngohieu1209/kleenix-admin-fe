@@ -1,5 +1,6 @@
 import isEqual from 'lodash/isEqual';
 import { useState, useEffect, useCallback } from 'react';
+import _ from 'lodash';
 
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
@@ -12,7 +13,7 @@ import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
 
-import { useGetHouseWorkers, deleteHouseWorker } from 'src/api/house-worker';
+import { useGetPromotions, deletePromotion } from 'src/api/promotion';
 
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
@@ -28,17 +29,18 @@ import {
   TablePaginationCustom,
 } from 'src/components/table';
 
-import HouseWorkerTableRow from '../house-worker-table-row';
-import HouseWorkerTableToolbar from '../house-worker-table-toolbar';
-import HouseWorkerTableFiltersResult from '../house-worker-table-filters-result';
+import PromotionTableRow from '../promotion-table-row';
+import PromotionTableToolbar from '../promotion-table-toolbar';
+import PromotionTableFiltersResult from '../promotion-table-filters-result';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Tên' },
-  { id: 'age', label: 'Tuổi', width: 280, align: 'center' },
-  { id: 'gender', label: 'Giới tính', width: 260 },
-  { id: 'createdAt', label: 'Ngày tạo', width: 200 },
+  { id: 'name', label: 'Tên khuyến mãi' },
+  { id: 'description', label: 'Miêu tả', width: 280 },
+  { id: 'point', label: 'Điểm đổi', width: 120, align: 'center'},
+  { id: 'startTime', label: 'Hiệu lực', width: 160, align: 'center'},
+  { id: 'activate', label: 'Hoạt động', width: 120, align: 'center'},
   { id: '', width: 88 },
 ];
 
@@ -48,7 +50,7 @@ const defaultFilters = {
 
 // ----------------------------------------------------------------------
 
-export default function HouseWorkerListView() {
+export default function PromotionListView() {
   const table = useTable();
 
   const settings = useSettingsContext();
@@ -57,13 +59,13 @@ export default function HouseWorkerListView() {
 
   const [tableData, setTableData] = useState([]);
 
-  const { houseWorkers } = useGetHouseWorkers();
+  const { promotions } = useGetPromotions();
 
   useEffect(() => {
-    if (houseWorkers.length) {
-      setTableData(houseWorkers);
+    if (promotions.length) {
+      setTableData(promotions);
     }
-  }, [houseWorkers]);
+  }, [promotions]);
 
   const [filters, setFilters] = useState(defaultFilters);
 
@@ -94,7 +96,7 @@ export default function HouseWorkerListView() {
 
   const handleDeleteRow = useCallback(
     async (id) => {
-      await deleteHouseWorker(id);
+      await deletePromotion(id);
       const deleteRow = tableData.filter((row) => row.id !== id);
       setTableData(deleteRow);
 
@@ -105,14 +107,14 @@ export default function HouseWorkerListView() {
 
   const handleEditRow = useCallback(
     (id) => {
-      router.push(paths.dashboard.houseWorker.edit(id));
+      router.push(paths.dashboard.promotion.edit(id));
     },
     [router]
   );
 
   const handleViewRow = useCallback(
     (id) => {
-      router.push(paths.dashboard.houseWorker.details(id));
+      router.push(paths.dashboard.promotion.details(id));
     },
     [router]
   );
@@ -124,16 +126,16 @@ export default function HouseWorkerListView() {
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading="Danh sách tài khoản giúp việc"
+        heading="Danh sách khuyến mãi"
         links={[]}
         action={
           <Button
             component={RouterLink}
-            href={paths.dashboard.houseWorker.new}
+            href={paths.dashboard.promotion.new}
             variant="contained"
             startIcon={<Iconify icon="mingcute:add-line" />}
           >
-            Tạo tài khoản giúp việc
+            Tạo khuyến mãi
           </Button>
         }
         sx={{
@@ -142,10 +144,10 @@ export default function HouseWorkerListView() {
       />
 
       <Card>
-        <HouseWorkerTableToolbar filters={filters} onFilters={handleFilters} />
+        <PromotionTableToolbar filters={filters} onFilters={handleFilters} />
 
         {canReset && (
-          <HouseWorkerTableFiltersResult
+          <PromotionTableFiltersResult
             filters={filters}
             onFilters={handleFilters}
             //
@@ -174,7 +176,7 @@ export default function HouseWorkerListView() {
                     table.page * table.rowsPerPage + table.rowsPerPage
                   )
                   .map((row) => (
-                    <HouseWorkerTableRow
+                    <PromotionTableRow
                       key={row.id}
                       row={row}
                       onDeleteRow={() => handleDeleteRow(row.id)}
@@ -210,7 +212,8 @@ export default function HouseWorkerListView() {
 function applyFilter({ inputData, comparator, filters }) {
   const { name } = filters;
 
-  const stabilizedThis = inputData.map((el, index) => [el, index]);
+  const stabilizedThis = _.map(inputData, (el, index) => [el, index]);
+
 
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
@@ -222,7 +225,7 @@ function applyFilter({ inputData, comparator, filters }) {
 
   if (name) {
     inputData = inputData.filter(
-      (houseWorker) => houseWorker.name.toLowerCase().indexOf(name.toLowerCase()) !== -1
+      (promotion) => promotion.name.toLowerCase().indexOf(name.toLowerCase()) !== -1
     );
   }
 

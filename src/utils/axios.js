@@ -59,5 +59,12 @@ export const endpoints = {
     detail: '/admin/house-worker/detail',
     new: '/admin/house-worker/new',
     root: '/admin/house-worker',
+    assignment: '/admin/house-worker/assignment'
+  },
+  promotion: {
+    list: '/admin/promotion/list',
+    detail: '/admin/promotion/detail',
+    new: '/admin/promotion/new',
+    root: '/admin/promotion',
   }
 };

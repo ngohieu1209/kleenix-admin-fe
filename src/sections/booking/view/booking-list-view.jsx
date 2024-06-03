@@ -1,4 +1,5 @@
 import isEqual from 'lodash/isEqual';
+import { endOfDay, startOfDay } from 'date-fns';
 import { useState, useEffect, useCallback } from 'react';
 
 import Card from '@mui/material/Card';
@@ -27,12 +28,26 @@ import {
   TableHeadCustom,
   TablePaginationCustom,
 } from 'src/components/table';
-
+import Tab from '@mui/material/Tab';
+import Tabs from '@mui/material/Tabs';
+import { alpha } from '@mui/material/styles';
+import Label from 'src/components/label';
+import { fTimestamp } from 'src/utils/format-time';
 import BookingTableRow from '../booking-table-row';
 import BookingTableToolbar from '../booking-table-toolbar';
 import BookingTableFiltersResult from '../booking-table-filters-result';
 
 // ----------------------------------------------------------------------
+
+const STATUS_OPTIONS = [
+  { value: 'all', label: 'Tất cả' },
+  { value: 'pending', label: 'Đang chờ' },
+  { value: 'confirmed', label: 'Đã xác nhận' },
+  { value: 'delivery', label: 'Đang di chuyển' },
+  { value: 'working', label: 'Đang làm việc' },
+  { value: 'completed', label: 'Đã hoàn thành' },
+  { value: 'cancelled', label: 'Đã hủy' },
+];
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Khách hàng' },
@@ -44,7 +59,9 @@ const TABLE_HEAD = [
 ];
 
 const defaultFilters = {
-  name: '',
+  status: 'all',
+  startDate: null,
+  endDate: null,
 };
 
 // ----------------------------------------------------------------------
@@ -67,16 +84,15 @@ export default function BookingListView() {
   }, [bookings]);
 
   const [filters, setFilters] = useState(defaultFilters);
+  const dateError = filters.startDate && filters.endDate ? filters.startDate.getTime() > filters.endDate.getTime() : false;
 
   const dataFiltered = applyFilter({
     inputData: tableData,
     comparator: getComparator(table.order, table.orderBy),
     filters,
+    dateError
   });
-  const dataInPage = dataFiltered.slice(
-    table.page * table.rowsPerPage,
-    table.page * table.rowsPerPage + table.rowsPerPage
-  );
+
 
   const canReset = !isEqual(defaultFilters, filters);
 
@@ -100,6 +116,13 @@ export default function BookingListView() {
     [router]
   );
 
+  const handleFilterStatus = useCallback(
+    (event, newValue) => {
+      handleFilters('status', newValue);
+    },
+    [handleFilters]
+  );
+
   const handleResetFilters = useCallback(() => {
     setFilters(defaultFilters);
   }, []);
@@ -116,7 +139,60 @@ export default function BookingListView() {
       />
 
       <Card>
-        <BookingTableToolbar filters={filters} onFilters={handleFilters} />
+        <Tabs
+          value={filters.status}
+          onChange={handleFilterStatus}
+          sx={{
+            px: 2.5,
+            boxShadow: (theme) => `inset 0 -2px 0 0 ${alpha(theme.palette.grey[500], 0.08)}`,
+          }}
+        >
+          {STATUS_OPTIONS.map((tab) => (
+            <Tab
+              key={tab.value}
+              iconPosition="end"
+              value={tab.value}
+              label={tab.label}
+              icon={
+                <Label
+                  variant={
+                    ((tab.value === 'all' || tab.value === filters.status) && 'filled') || 'soft'
+                  }
+                  color={
+                    (tab.value === 'pending' && 'warning') ||
+                    (tab.value === 'confirmed' && 'success') ||
+                    (tab.value === 'delivery' && 'warning') ||
+                    (tab.value === 'working' && 'secondary') ||
+                    (tab.value === 'completed' && 'info') ||
+                    (tab.value === 'cancelled' && 'error') ||
+                    'default'
+                  }
+                >
+                  {tab.value === 'all' && dataFiltered.length}
+                  {tab.value === 'pending' &&
+                    dataFiltered.filter((booking) => booking.status === 'PENDING').length}
+
+                  {tab.value === 'confirmed' &&
+                    dataFiltered.filter((booking) => booking.status === 'CONFIRMED').length}
+
+                  {tab.value === 'delivery' &&
+                    dataFiltered.filter((booking) => booking.status === 'DELIVERY').length}
+
+                  {tab.value === 'working' &&
+                    dataFiltered.filter((booking) => booking.status === 'WORKING').length}
+
+                  {tab.value === 'completed' &&
+                    dataFiltered.filter((booking) => booking.status === 'COMPLETED').length}
+
+                  {tab.value === 'cancelled' &&
+                    dataFiltered.filter((booking) => booking.status.includes('CANCELLED')).length}
+                </Label>
+              }
+            />
+          ))}
+        </Tabs>
+
+        <BookingTableToolbar filters={filters} onFilters={handleFilters} dateError={dateError} />
 
         {canReset && (
           <BookingTableFiltersResult
@@ -179,8 +255,8 @@ export default function BookingListView() {
 
 // ----------------------------------------------------------------------
 
-function applyFilter({ inputData, comparator, filters }) {
-  const { name } = filters;
+function applyFilter({ inputData, comparator, filters, dateError }) {
+  const { startDate, endDate, status } = filters;
 
   const stabilizedThis = inputData.map((el, index) => [el, index]);
 
@@ -192,10 +268,26 @@ function applyFilter({ inputData, comparator, filters }) {
 
   inputData = stabilizedThis.map((el) => el[0]);
 
-  if (name) {
-    inputData = inputData.filter(
-      (service) => service.name.toLowerCase().indexOf(name.toLowerCase()) !== -1
-    );
+  if (!dateError) {
+    if (startDate && endDate) {
+      inputData = inputData.filter(
+        (booking) =>
+          fTimestamp(booking.createdAt) >= fTimestamp(startOfDay(startDate)) &&
+          fTimestamp(booking.createdAt) <= fTimestamp(endOfDay(endDate))
+      )
+    } else if(startDate) {
+      inputData = inputData.filter(
+        (booking) => fTimestamp(booking.createdAt) >= fTimestamp(startOfDay(startDate))
+      )
+    } else if(endDate) {
+      inputData = inputData.filter(
+        (booking) => fTimestamp(booking.createdAt) <= fTimestamp(endOfDay(endDate))
+      )
+    }
+  }
+
+  if (status !== 'all') {
+    inputData = inputData.filter((booking) => booking.status.includes(status.toUpperCase()));
   }
 
   return inputData;

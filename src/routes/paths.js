@@ -41,5 +41,11 @@ export const paths = {
       details: (id) => `${ROOTS.DASHBOARD}/house-worker/${id}`,
       edit: (id) => `${ROOTS.DASHBOARD}/house-worker/${id}/edit`,
     },
+    promotion: {
+      root: `${ROOTS.DASHBOARD}/promotion`,
+      new: `${ROOTS.DASHBOARD}/promotion/new`,
+      details: (id) => `${ROOTS.DASHBOARD}/promotion/${id}`,
+      edit: (id) => `${ROOTS.DASHBOARD}/promotion/${id}/edit`,
+    },
   },
 };

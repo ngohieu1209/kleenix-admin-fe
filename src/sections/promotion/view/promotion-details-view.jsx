@@ -8,32 +8,32 @@ import Container from '@mui/material/Container';
 import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
 
-import { useGetHouseWorker } from 'src/api/house-worker'
+import { useGetPromotion } from 'src/api/promotion'
 
 import Iconify from 'src/components/iconify';
 import EmptyContent from 'src/components/empty-content';
 import { useSettingsContext } from 'src/components/settings';
 
-import { HouseWorkerDetailsSkeleton } from '../house-worker-skeleton'
-import HouseWorkerDetailsToolbar from '../house-worker-details-toolbar';
-import HouseWorkerDetailsContent from '../house-worker-details-content';
+import { PromotionDetailsSkeleton } from '../promotion-skeleton'
+import PromotionDetailsToolbar from '../promotion-details-toolbar';
+import PromotionDetailsContent from '../promotion-details-content';
 
 // ----------------------------------------------------------------------
 
-export default function HouseWorkerDetailsView({ id }) {
-  const { houseWorker, houseWorkerLoading, houseWorkerError } = useGetHouseWorker(id)
+export default function PromotionDetailsView({ id }) {
+  const { promotion, promotionLoading, promotionError } = useGetPromotion(id)
   const settings = useSettingsContext();
 
-  const renderSkeleton = <HouseWorkerDetailsSkeleton />;
+  const renderSkeleton = <PromotionDetailsSkeleton />;
 
   const renderError = (
     <EmptyContent
       filled
-      title={`${houseWorkerError?.message}`}
+      title={`${promotionError?.message}`}
       action={
         <Button
           component={RouterLink}
-          href={paths.dashboard.houseWorker.root}
+          href={paths.dashboard.extraService.root}
           startIcon={<Iconify icon="eva:arrow-ios-back-fill" width={16} />}
           sx={{ mt: 3 }}
         >
@@ -46,43 +46,43 @@ export default function HouseWorkerDetailsView({ id }) {
 
   const renderTabs = (
     <Tabs
-      value='houseWorker'
+      value='promotion'
       sx={{
         mb: { xs: 3, md: 5 },
       }}
     >
       <Tab
-        key='houseWorker'
+        key='promotion'
         iconPosition="end"
-        value='houseWorker'
-        label="Danh sách công việc"
+        value='promotion'
+        label="Chi tiết khuyến mãi"
       />
     </Tabs>
   );
 
-  const renderService = houseWorker && (
+  const renderPromotion = promotion && (
     <>
-      <HouseWorkerDetailsToolbar
-        backLink={paths.dashboard.houseWorker.root}
+      <PromotionDetailsToolbar
+        backLink={paths.dashboard.extraService.root}
         liveLink="#"
       />
       {renderTabs}
 
-      <HouseWorkerDetailsContent houseWorker={houseWorker} />
+      <PromotionDetailsContent promotion={promotion} />
     </>
   )
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
-      {houseWorkerLoading && renderSkeleton}
+      {promotionLoading && renderSkeleton}
 
-      {houseWorkerError && renderError}
+      {promotionError && renderError}
 
-      {houseWorker && renderService}
+      {promotion && renderPromotion}
     </Container>
   );
 }
 
-HouseWorkerDetailsView.propTypes = {
+PromotionDetailsView.propTypes = {
   id: PropTypes.string,
 };

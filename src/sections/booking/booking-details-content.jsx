@@ -23,10 +23,10 @@ import { fCurrency } from 'src/utils/format-number';
 // ----------------------------------------------------------------------
 
 export default function BookingDetailsContent({ booking }) {
-  const { address, bookingExtraService, bookingPackage, createdAt, dateTime, duration, note, status, totalPrice } = booking;
+  const { address, bookingExtraService, bookingPackage, createdAt, dateTime, duration, note, status, totalPrice, customerPromotion } = booking;
   const { customer } = address;
   const { service } = bookingPackage[0].package;
-
+  const selectedPromotion = customerPromotion.length > 0 ? customerPromotion[0] : null;
   const expectedEndTime = addMinutes(new Date(dateTime), duration);
 
   const renderContent = (
@@ -118,7 +118,7 @@ export default function BookingDetailsContent({ booking }) {
               alignItems='center'
               justifyContent='space-between'
             >
-              <Typography variant="body1">{item.name}</Typography>
+              <Typography variant="body1">{item.extraService.name}</Typography>
             </Box>
           ))}
         </>
@@ -173,10 +173,30 @@ export default function BookingDetailsContent({ booking }) {
               alignItems='center'
               justifyContent='space-between'
             >
-              <Typography variant="body2">• {item.name}</Typography>
-              <Typography variant="body2">{fCurrency(Number(item.price))}</Typography>
+              <Typography variant="body2">• {item.extraService.name}</Typography>
+              <Typography variant="body2">{fCurrency(Number(item.extraService.price))}</Typography>
             </Box>
           ))}
+        </>
+      )}
+
+      {/* KHUYẾN MÃI */}
+      {selectedPromotion && (
+        <>
+          <Box
+            sx={{
+              borderTop: (theme) => `dashed 2px ${theme.palette.background.neutral}`,
+            }}
+          />
+          <Typography variant="body1">Khuyến mãi</Typography>
+          <Box
+            display='flex'
+            alignItems='center'
+            justifyContent='space-between'
+          >
+            <Typography variant="body2">{selectedPromotion.promotion.name}</Typography>
+            <Typography variant="body2">- {fCurrency(Number(selectedPromotion.promotion.discount))}</Typography>
+          </Box>
         </>
       )}
 

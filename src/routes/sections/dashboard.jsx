@@ -26,6 +26,11 @@ const HouseWorkerListPage = lazy(() => import('src/pages/dashboard/house-worker/
 const HouseWorkerCreatePage = lazy(() => import('src/pages/dashboard/house-worker/new'));
 const HouseWorkerEditPage = lazy(() => import('src/pages/dashboard/house-worker/edit'));
 const HouseWorkerDetailsPage = lazy(() => import('src/pages/dashboard/house-worker/details'));
+// Promotion
+const PromotionListPage = lazy(() => import('src/pages/dashboard/promotion/list'));
+const PromotionCreatePage = lazy(() => import('src/pages/dashboard/promotion/new'));
+const PromotionEditPage = lazy(() => import('src/pages/dashboard/promotion/edit'));
+const PromotionDetailsPage = lazy(() => import('src/pages/dashboard/promotion/details'));
 // ----------------------------------------------------------------------
 
 export const dashboardRoutes = [
@@ -81,6 +86,16 @@ export const dashboardRoutes = [
           { path: ':id', element: <HouseWorkerDetailsPage /> },
           { path: 'new', element: <HouseWorkerCreatePage /> },
           { path: ':id/edit', element: <HouseWorkerEditPage /> },
+        ],
+      },
+      {
+        path: 'promotion',
+        children: [
+          { element: <PromotionListPage />, index: true },
+          { path: 'list', element: <PromotionListPage /> },
+          { path: ':id', element: <PromotionDetailsPage /> },
+          { path: 'new', element: <PromotionCreatePage /> },
+          { path: ':id/edit', element: <PromotionEditPage /> },
         ],
       },
     ],

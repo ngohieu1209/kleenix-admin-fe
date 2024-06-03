@@ -2,18 +2,29 @@ import PropTypes from 'prop-types';
 import { useCallback } from 'react';
 
 import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
-import InputAdornment from '@mui/material/InputAdornment';
 
-import Iconify from 'src/components/iconify';
-
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 // ----------------------------------------------------------------------
 
-export default function BookingTableToolbar({ filters, onFilters }) {
+export default function BookingTableToolbar({
+  filters,
+  onFilters,
+    //
+  canReset,
+  onResetFilters,
+  dateError
+}) {
 
-  const handleFilterName = useCallback(
-    (event) => {
-      onFilters('name', event.target.value);
+  const handleFilterStartDate = useCallback(
+    (newValue) => {
+      onFilters('startDate', newValue);
+    },
+    [onFilters]
+  );
+
+  const handleFilterEndDate = useCallback(
+    (newValue) => {
+      onFilters('endDate', newValue);
     },
     [onFilters]
   );
@@ -21,7 +32,6 @@ export default function BookingTableToolbar({ filters, onFilters }) {
   return (
     <Stack
       spacing={2}
-      alignItems={{ xs: 'flex-end', md: 'center' }}
       direction={{
         xs: 'column',
         md: 'row',
@@ -31,28 +41,35 @@ export default function BookingTableToolbar({ filters, onFilters }) {
         pr: { xs: 2.5, md: 1 },
       }}
     >
-      <Stack
-        spacing={3}
-        justifyContent="space-between"
-        alignItems={{ xs: 'flex-end', sm: 'center' }}
-        direction={{ xs: 'column', sm: 'row' }}
-        sx={{ width: 1 }}
-      >
-        <TextField
-          sx={{ width: { xs: 1, sm: 260 } }}
-          fullWidth
-          value={filters.name}
-          onChange={handleFilterName}
-          placeholder="Tìm kiếm ..."
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled' }} />
-              </InputAdornment>
-            ),
-          }}
-        />
-      </Stack>
+      <DatePicker
+        label="Ngày bắt đầu"
+        value={filters.startDate}
+        onChange={handleFilterStartDate}
+        slotProps={{
+          textField: {
+            fullWidth: true,
+          },
+        }}
+        sx={{
+          maxWidth: { md: 200 },
+        }}
+      />
+
+      <DatePicker
+        label="Ngày kết thúc"
+        value={filters.endDate}
+        onChange={handleFilterEndDate}
+        slotProps={{
+          textField: {
+            fullWidth: true ,
+            error: dateError,
+            helperText: dateError && 'Ngày kết thúc phải sau ngày bắt đầu',
+          }
+        }}
+        sx={{
+          maxWidth: { md: 200 },
+        }}
+      />
     </Stack>
   );
 }
@@ -60,4 +77,7 @@ export default function BookingTableToolbar({ filters, onFilters }) {
 BookingTableToolbar.propTypes = {
   filters: PropTypes.object,
   onFilters: PropTypes.func,
+  canReset: PropTypes.bool,
+  onResetFilters: PropTypes.func,
+  dateError: PropTypes.bool
 };

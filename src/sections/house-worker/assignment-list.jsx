@@ -1,20 +1,18 @@
+import PropTypes from 'prop-types';
 import isEqual from 'lodash/isEqual';
 import { useState, useEffect, useCallback } from 'react';
 
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
-import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
 import TableContainer from '@mui/material/TableContainer';
 
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
-import { RouterLink } from 'src/routes/components';
 
-import { useGetHouseWorkers, deleteHouseWorker } from 'src/api/house-worker';
+import { useGetListAssignment } from 'src/api/house-worker';
 
-import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
@@ -28,27 +26,28 @@ import {
   TablePaginationCustom,
 } from 'src/components/table';
 
-import HouseWorkerTableRow from '../house-worker-table-row';
-import HouseWorkerTableToolbar from '../house-worker-table-toolbar';
-import HouseWorkerTableFiltersResult from '../house-worker-table-filters-result';
+import AssignmentTableRow from './assignment-table-row';
+import AssignmentTableToolbar from './assignment-table-toolbar';
+import AssignmentTableFiltersResult from './assignment-table-filters-result';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Tên' },
-  { id: 'age', label: 'Tuổi', width: 280, align: 'center' },
-  { id: 'gender', label: 'Giới tính', width: 260 },
-  { id: 'createdAt', label: 'Ngày tạo', width: 200 },
-  { id: '', width: 88 },
+  { id: 'name', label: 'Dịch vụ' },
+  { id: 'customer', label: 'Khách hàng', width: 200 },
+  { id: 'dateTime', label: 'Ngày nhận booking', width: 180 },
+  { id: 'status', label: 'Trạng thái', width: 100 },
+  { id: '', width: 55 },
 ];
 
 const defaultFilters = {
   name: '',
+  status: 'all',
 };
 
 // ----------------------------------------------------------------------
 
-export default function HouseWorkerListView() {
+export default function AssignmentList({ houseWorker }) {
   const table = useTable();
 
   const settings = useSettingsContext();
@@ -57,13 +56,15 @@ export default function HouseWorkerListView() {
 
   const [tableData, setTableData] = useState([]);
 
-  const { houseWorkers } = useGetHouseWorkers();
+  const { assignments } = useGetListAssignment(houseWorker.id);
+
+  console.log('winter-assigment-list', assignments);
 
   useEffect(() => {
-    if (houseWorkers.length) {
-      setTableData(houseWorkers);
+    if (assignments.length) {
+      setTableData(assignments);
     }
-  }, [houseWorkers]);
+  }, [assignments]);
 
   const [filters, setFilters] = useState(defaultFilters);
 
@@ -72,10 +73,6 @@ export default function HouseWorkerListView() {
     comparator: getComparator(table.order, table.orderBy),
     filters,
   });
-  const dataInPage = dataFiltered.slice(
-    table.page * table.rowsPerPage,
-    table.page * table.rowsPerPage + table.rowsPerPage
-  );
 
   const canReset = !isEqual(defaultFilters, filters);
 
@@ -92,27 +89,9 @@ export default function HouseWorkerListView() {
     [table]
   );
 
-  const handleDeleteRow = useCallback(
-    async (id) => {
-      await deleteHouseWorker(id);
-      const deleteRow = tableData.filter((row) => row.id !== id);
-      setTableData(deleteRow);
-
-      table.onUpdatePageDeleteRow(dataInPage.length);
-    },
-    [dataInPage.length, table, tableData]
-  );
-
-  const handleEditRow = useCallback(
-    (id) => {
-      router.push(paths.dashboard.houseWorker.edit(id));
-    },
-    [router]
-  );
-
   const handleViewRow = useCallback(
-    (id) => {
-      router.push(paths.dashboard.houseWorker.details(id));
+    (booking) => {
+      router.push(paths.dashboard.booking.details(booking.id));
     },
     [router]
   );
@@ -123,29 +102,11 @@ export default function HouseWorkerListView() {
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
-      <CustomBreadcrumbs
-        heading="Danh sách tài khoản giúp việc"
-        links={[]}
-        action={
-          <Button
-            component={RouterLink}
-            href={paths.dashboard.houseWorker.new}
-            variant="contained"
-            startIcon={<Iconify icon="mingcute:add-line" />}
-          >
-            Tạo tài khoản giúp việc
-          </Button>
-        }
-        sx={{
-          mb: { xs: 3, md: 5 },
-        }}
-      />
-
       <Card>
-        <HouseWorkerTableToolbar filters={filters} onFilters={handleFilters} />
+        {/* <AssignmentTableToolbar filters={filters} onFilters={handleFilters} /> */}
 
         {canReset && (
-          <HouseWorkerTableFiltersResult
+          <AssignmentTableFiltersResult
             filters={filters}
             onFilters={handleFilters}
             //
@@ -158,7 +119,7 @@ export default function HouseWorkerListView() {
 
         <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
           <Scrollbar>
-            <Table size="medium" sx={{ minWidth: 960 }}>
+            <Table size="medium" sx={{ minWidth: 360 }}>
               <TableHeadCustom
                 order={table.order}
                 orderBy={table.orderBy}
@@ -174,12 +135,10 @@ export default function HouseWorkerListView() {
                     table.page * table.rowsPerPage + table.rowsPerPage
                   )
                   .map((row) => (
-                    <HouseWorkerTableRow
+                    <AssignmentTableRow
                       key={row.id}
                       row={row}
-                      onDeleteRow={() => handleDeleteRow(row.id)}
-                      onEditRow={() => handleEditRow(row.id)}
-                      onViewRow={() => handleViewRow(row.id)}
+                      onViewRow={() => handleViewRow(row.booking)}
                     />
                   ))}
 
@@ -205,6 +164,10 @@ export default function HouseWorkerListView() {
   );
 }
 
+AssignmentList.propTypes = {
+  houseWorker: PropTypes.object,
+};
+
 // ----------------------------------------------------------------------
 
 function applyFilter({ inputData, comparator, filters }) {
@@ -219,12 +182,19 @@ function applyFilter({ inputData, comparator, filters }) {
   });
 
   inputData = stabilizedThis.map((el) => el[0]);
+  // if (name) {
+  //   inputData = inputData.filter(
+  //     (activationCode) => activationCode.codeActive.toLowerCase().indexOf(name.toLowerCase()) !== -1
+  //   );
+  // }
 
-  if (name) {
-    inputData = inputData.filter(
-      (houseWorker) => houseWorker.name.toLowerCase().indexOf(name.toLowerCase()) !== -1
-    );
-  }
+  // if (status !== 'all') {
+  //   inputData = inputData.filter((user) => user.status === status);
+  // }
+
+  // if (role.length) {
+  //   inputData = inputData.filter((user) => role.includes(user.role));
+  // }
 
   return inputData;
 }
