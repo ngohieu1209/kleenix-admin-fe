@@ -23,6 +23,7 @@ export function fToNow(date) {
   return date
     ? formatDistanceToNow(new Date(date), {
         addSuffix: true,
+        locale: vi,
       })
     : '';
 }

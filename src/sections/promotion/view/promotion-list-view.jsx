@@ -105,6 +105,7 @@ export default function PromotionListView() {
     [dataInPage.length, table, tableData]
   );
 
+
   const handleEditRow = useCallback(
     (id) => {
       router.push(paths.dashboard.promotion.edit(id));

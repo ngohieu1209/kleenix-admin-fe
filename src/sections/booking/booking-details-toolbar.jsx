@@ -11,6 +11,8 @@ import { RouterLink } from 'src/routes/components';
 import Iconify from 'src/components/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 
+import { fCheckAbleToCancelledStatus } from 'src/utils/format-string';
+
 // ----------------------------------------------------------------------
 
 export default function BookingDetailsToolbar({
@@ -41,16 +43,17 @@ export default function BookingDetailsToolbar({
         </Button>
 
         <Box sx={{ flexGrow: 1 }} />
-
-        <LoadingButton
-          color="inherit"
-          variant="contained"
-          // loading={!publish}
-          loadingIndicator="Loading…"
-          onClick={confirm.onTrue}
-        >
-          Huỷ lịch đặt
-        </LoadingButton>
+        {fCheckAbleToCancelledStatus(status) && (
+          <LoadingButton
+            color="inherit"
+            variant="contained"
+            // loading={!publish}
+            loadingIndicator="Loading…"
+            onClick={confirm.onTrue}
+          >
+            Huỷ lịch đặt
+          </LoadingButton>
+        )}
       </Stack>
       <ConfirmDialog
         open={confirm.value}

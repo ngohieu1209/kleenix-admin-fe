@@ -63,8 +63,8 @@ export default function PromotionNewEditForm({ promotion }) {
       amount: promotion?.amount || 1,
       discount: promotion?.discount || 0,
       point: promotion?.point || 0,
-      startTime: promotion.startTime ? new Date(promotion.startTime) : new Date(),
-      endTime: promotion.endTime ? new Date(promotion.endTime) : null,
+      startTime: promotion?.startTime ? new Date(promotion.startTime) : new Date(),
+      endTime: promotion?.endTime ? new Date(promotion.endTime) : null,
     }),
     [promotion]
   );

@@ -64,6 +64,7 @@
     "react/function-component-definition": 0,
     "jsx-a11y/control-has-associated-label": 0,
     "dot-notation": 0,
+    "arrow-body-style": ["off"],
     "react/jsx-no-useless-fragment": [
       1,
       {

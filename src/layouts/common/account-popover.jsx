@@ -72,7 +72,7 @@ export default function AccountPopover() {
         }}
       >
         <Avatar
-          src={user?.avatar}
+          src='/assets/icons/home/manager.png'
           alt={user?.name}
           sx={{
             width: 36,
@@ -82,6 +82,7 @@ export default function AccountPopover() {
         >
           {user?.name}
         </Avatar>
+
       </IconButton>
 
       <CustomPopover open={popover.open} onClose={popover.onClose} sx={{ width: 200, p: 0 }}>

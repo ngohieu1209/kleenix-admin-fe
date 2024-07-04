@@ -1,21 +1,17 @@
-import isEqual from 'lodash/isEqual';
 import { endOfDay, startOfDay } from 'date-fns';
 import { useState, useEffect, useCallback } from 'react';
 
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
-import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
 import TableContainer from '@mui/material/TableContainer';
 
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
-import { RouterLink } from 'src/routes/components';
 
 import { useGetBookings } from 'src/api/booking';
 
-import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
@@ -51,14 +47,16 @@ const STATUS_OPTIONS = [
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Khách hàng' },
+  { id: 'booking', label: 'Mã booking', width: 120 },
   { id: 'service', label: 'Dịch vụ', width: 240 },
   { id: 'dateTime', label: 'Ngày đặt', width: 160 },
-  { id: 'totalPrice', label: 'Chi phí', width: 180},
+  { id: 'totalPrice', label: 'Chi phí', width: 160},
   { id: 'status', label: 'Trạng thái', width: 100 },
-  { id: '', width: 88 },
+  { id: '', width: 66 },
 ];
 
 const defaultFilters = {
+  name: '',
   status: 'all',
   startDate: null,
   endDate: null,
@@ -94,7 +92,7 @@ export default function BookingListView() {
   });
 
 
-  const canReset = !isEqual(defaultFilters, filters);
+  const canReset = !!filters.name || filters.status !== 'all' || (!!filters.startDate && !!filters.endDate);
 
   const notFound = (!dataFiltered.length && canReset) || !dataFiltered.length;
 
@@ -168,24 +166,24 @@ export default function BookingListView() {
                     'default'
                   }
                 >
-                  {tab.value === 'all' && dataFiltered.length}
+                  {tab.value === 'all' && bookings.length}
                   {tab.value === 'pending' &&
-                    dataFiltered.filter((booking) => booking.status === 'PENDING').length}
+                    bookings.filter((booking) => booking.status === 'PENDING').length}
 
                   {tab.value === 'confirmed' &&
-                    dataFiltered.filter((booking) => booking.status === 'CONFIRMED').length}
+                    bookings.filter((booking) => booking.status === 'CONFIRMED').length}
 
                   {tab.value === 'delivery' &&
-                    dataFiltered.filter((booking) => booking.status === 'DELIVERY').length}
+                    bookings.filter((booking) => booking.status === 'DELIVERY').length}
 
                   {tab.value === 'working' &&
-                    dataFiltered.filter((booking) => booking.status === 'WORKING').length}
+                    bookings.filter((booking) => booking.status === 'WORKING').length}
 
                   {tab.value === 'completed' &&
-                    dataFiltered.filter((booking) => booking.status === 'COMPLETED').length}
+                    bookings.filter((booking) => booking.status === 'COMPLETED').length}
 
                   {tab.value === 'cancelled' &&
-                    dataFiltered.filter((booking) => booking.status.includes('CANCELLED')).length}
+                    bookings.filter((booking) => booking.status.includes('CANCELLED')).length}
                 </Label>
               }
             />
@@ -256,7 +254,7 @@ export default function BookingListView() {
 // ----------------------------------------------------------------------
 
 function applyFilter({ inputData, comparator, filters, dateError }) {
-  const { startDate, endDate, status } = filters;
+  const { name, startDate, endDate, status } = filters;
 
   const stabilizedThis = inputData.map((el, index) => [el, index]);
 
@@ -288,6 +286,10 @@ function applyFilter({ inputData, comparator, filters, dateError }) {
 
   if (status !== 'all') {
     inputData = inputData.filter((booking) => booking.status.includes(status.toUpperCase()));
+  }
+
+  if(name) {
+    inputData = inputData.filter((item) => item.id.includes(name));
   }
 
   return inputData;

@@ -1,12 +1,13 @@
 import { lazy, Suspense } from 'react';
-import { Outlet, Navigate } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 
 import { AuthGuard } from 'src/auth/guard';
 import DashboardLayout from 'src/layouts/dashboard';
-import { PATH_AFTER_LOGIN } from 'src/config-global';
 
 import { LoadingScreen } from 'src/components/loading-screen';
 
+// OVERVIEW
+const OverviewAnalyticsPage = lazy(() => import('src/pages/dashboard/analytics'));
 // ----------------------------------------------------------------------
 // SERVICE
 const ServiceListPage = lazy(() => import('src/pages/dashboard/service/list'));
@@ -31,6 +32,9 @@ const PromotionListPage = lazy(() => import('src/pages/dashboard/promotion/list'
 const PromotionCreatePage = lazy(() => import('src/pages/dashboard/promotion/new'));
 const PromotionEditPage = lazy(() => import('src/pages/dashboard/promotion/edit'));
 const PromotionDetailsPage = lazy(() => import('src/pages/dashboard/promotion/details'));
+// FEEDBACK
+const FeedbackListPage = lazy(() => import('src/pages/dashboard/feedback/list'));
+const FeedbackDetailsPage = lazy(() => import('src/pages/dashboard/feedback/details'));
 // ----------------------------------------------------------------------
 
 export const dashboardRoutes = [
@@ -47,8 +51,10 @@ export const dashboardRoutes = [
     ),
     children: [
       {
-        path: '',
-        element: <Navigate to={PATH_AFTER_LOGIN} replace />,
+        path: 'analytics',
+        children: [
+          { element: <OverviewAnalyticsPage />, index: true },
+        ],
       },
       {
         path: 'service',
@@ -96,6 +102,14 @@ export const dashboardRoutes = [
           { path: ':id', element: <PromotionDetailsPage /> },
           { path: 'new', element: <PromotionCreatePage /> },
           { path: ':id/edit', element: <PromotionEditPage /> },
+        ],
+      },
+      {
+        path: 'feedback',
+        children: [
+          { element: <FeedbackListPage />, index: true },
+          { path: 'list', element: <FeedbackListPage /> },
+          { path: ':id', element: <FeedbackDetailsPage /> },
         ],
       },
     ],

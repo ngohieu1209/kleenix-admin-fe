@@ -17,21 +17,24 @@ import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import { ASSETS_API } from 'src/config-global';
 
+import WorkerPasswordNewForm from './worker-password-new-form';
+
 // ----------------------------------------------------------------------
 
 export default function HouseWorkerTableRow({ row, onViewRow, onEditRow, onDeleteRow }) {
-  const { name, username, age, gender, createdAt } = row;
+  const { id, name, username, age, gender, createdAt, avatar } = row;
 
   const confirm = useBoolean();
 
   const popover = usePopover();
+  const quickNew = useBoolean();
 
   const renderPrimary = (
     <TableRow hover>
       <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
         <Avatar
           alt={name}
-          // src={`${ASSETS_API}/${icon}`}
+          src={`${ASSETS_API}/${avatar}`}
           variant='rounded'
           sx={{ mr: 2 }}
         />
@@ -89,6 +92,16 @@ export default function HouseWorkerTableRow({ row, onViewRow, onEditRow, onDelet
 
         <MenuItem
           onClick={() => {
+            quickNew.onTrue();
+            popover.onClose();
+          }}
+        >
+          <Iconify icon="solar:key-bold" />
+          Mật khẩu
+        </MenuItem>
+
+        <MenuItem
+          onClick={() => {
             onEditRow();
             popover.onClose();
           }}
@@ -107,6 +120,7 @@ export default function HouseWorkerTableRow({ row, onViewRow, onEditRow, onDelet
           <Iconify icon="solar:trash-bin-trash-bold" />
           Xóa
         </MenuItem>
+
       </CustomPopover>
 
       <ConfirmDialog
@@ -120,6 +134,7 @@ export default function HouseWorkerTableRow({ row, onViewRow, onEditRow, onDelet
           </Button>
         }
       />
+      <WorkerPasswordNewForm open={quickNew.value} onClose={quickNew.onFalse} houseWorkerId={id} />
     </>
   );
 }

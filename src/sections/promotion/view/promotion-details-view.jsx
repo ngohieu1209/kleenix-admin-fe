@@ -63,7 +63,7 @@ export default function PromotionDetailsView({ id }) {
   const renderPromotion = promotion && (
     <>
       <PromotionDetailsToolbar
-        backLink={paths.dashboard.extraService.root}
+        backLink={paths.dashboard.promotion.root}
         liveLink="#"
       />
       {renderTabs}

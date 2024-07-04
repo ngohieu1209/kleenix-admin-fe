@@ -41,7 +41,7 @@ export default function HouseWorkerNewEditForm({ currentHouseWorker }) {
     password: Yup.string().required('Mật khẩu không được để trống'),
     gender: Yup.string().required('Giới tính không được để trống'),
     age: Yup.number().typeError('Tuổi phải là một số').min(18, 'Tuổi không thể nhỏ hơn 18').required('Tuổi không được bỏ trống'),
-    // avatar: Yup.mixed().nullable().required('Avatar không được để trống'),
+    avatar: Yup.mixed().nullable(),
     // not required
   });
 
@@ -49,9 +49,10 @@ export default function HouseWorkerNewEditForm({ currentHouseWorker }) {
     () => ({
       name: currentHouseWorker?.name || '',
       username: currentHouseWorker?.username || '',
+      password: currentHouseWorker ? 'restrict' : '',
       gender: currentHouseWorker?.gender || 'FEMALE',
       age: currentHouseWorker?.age || '',
-      // icon: currentHouseWorker?.icon ? `${ASSETS_API}/${currentHouseWorker?.icon}` : null,
+      avatar: currentHouseWorker?.avatar ? `${ASSETS_API}/${currentHouseWorker?.avatar}` : null,
     }),
     [currentHouseWorker]
   );
@@ -99,7 +100,7 @@ export default function HouseWorkerNewEditForm({ currentHouseWorker }) {
       });
 
       if (file) {
-        setValue('icon', newFile, { shouldValidate: true });
+        setValue('avatar', newFile, { shouldValidate: true });
       }
     },
     [setValue]

@@ -31,6 +31,9 @@ export const endpoints = {
     login: '/admin/auth/login',
     logout: '/admin/auth/logout',
   },
+  overview: {
+    root: '/admin/overview',
+  },
   service: {
     list: '/admin/service/list',
     detail: '/admin/service/detail',
@@ -59,12 +62,18 @@ export const endpoints = {
     detail: '/admin/house-worker/detail',
     new: '/admin/house-worker/new',
     root: '/admin/house-worker',
-    assignment: '/admin/house-worker/assignment'
+    assignment: '/admin/house-worker/assignment',
+    resetPassword: '/admin/house-worker/reset-password',
   },
   promotion: {
     list: '/admin/promotion/list',
     detail: '/admin/promotion/detail',
     new: '/admin/promotion/new',
     root: '/admin/promotion',
-  }
+  },
+  feedback: {
+    list: '/admin/feedback/list',
+    detail: '/admin/feedback/detail',
+    root: '/admin/feedback',
+  },
 };

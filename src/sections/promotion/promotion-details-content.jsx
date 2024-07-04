@@ -7,7 +7,6 @@ import Stack from '@mui/material/Stack';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
-import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import ListItemText from '@mui/material/ListItemText';
 
@@ -69,7 +68,7 @@ export default function PromotionDetailsContent({ promotion }) {
         {
           label: 'Số lượt còn lại',
           value: amount,
-          icon: <Iconify icon="mingcute:counter-2-line" />,
+          icon: <Iconify icon="carbon:rotate-counterclockwise-filled" />,
         },
         {
           label: 'Điểm cần đổi',

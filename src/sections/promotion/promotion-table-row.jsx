@@ -11,7 +11,6 @@ import Checkbox from '@mui/material/Checkbox';
 
 import { useBoolean } from 'src/hooks/use-boolean';
 
-import { fCurrency } from 'src/utils/format-number';
 import { fDate } from 'src/utils/format-time';
 
 import Iconify from 'src/components/iconify';
@@ -22,7 +21,7 @@ import { ASSETS_API } from 'src/config-global';
 // ----------------------------------------------------------------------
 
 export default function PromotionTableRow({ row, onViewRow, onEditRow, onDeleteRow }) {
-  const { name, image, description, activate, point, startTime, endTime, discount, amount } = row;
+  const { name, image, description, activate, point, startTime, endTime, amount } = row;
 
   const confirm = useBoolean();
 

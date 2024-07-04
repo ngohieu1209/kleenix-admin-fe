@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { addMinutes } from 'date-fns';
 
@@ -7,37 +6,33 @@ import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
 import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
 
 import { ASSETS_API } from 'src/config-global';
 
-import Label from 'src/components/label';
-import Iconify from 'src/components/iconify';
 import { ListItemText } from '@mui/material';
 import { fAddress } from 'src/utils/format-address';
 import { fDateTime } from 'src/utils/format-time';
 import { fCurrency } from 'src/utils/format-number';
+import { fCodeBooking } from 'src/utils/format-string';
 
 // ----------------------------------------------------------------------
 
 export default function BookingDetailsContent({ booking }) {
-  const { address, bookingExtraService, bookingPackage, createdAt, dateTime, duration, note, status, totalPrice, customerPromotion } = booking;
+  const { id, address, bookingExtraService, bookingPackage, createdAt, dateTime, duration, note, totalPrice, customerPromotion, assignment } = booking;
   const { customer } = address;
-  const { service } = bookingPackage[0].package;
   const selectedPromotion = customerPromotion.length > 0 ? customerPromotion[0] : null;
   const expectedEndTime = addMinutes(new Date(dateTime), duration);
 
   const renderContent = (
     <Stack component={Card} spacing={3} sx={{ p: 3 }}>
-      <Typography variant="h4">Thông tin chi tiết</Typography>
+      <Typography variant="h4">Mã đơn booking: #{fCodeBooking(id)}</Typography>
       {/* KHÁCH HÀNG */}
       <Typography variant="body2">Khách hàng</Typography>
       <Box display="flex" alignItems="center">
         <Avatar
           alt={customer.name}
-          // src={`${ASSETS_API}/${icon}`}
+          src={`${ASSETS_API}/${customer.avatar}`}
           variant='circular'
           sx={{ mr: 2, width: 48, height: 48 }}
         />
@@ -217,6 +212,33 @@ export default function BookingDetailsContent({ booking }) {
     </Stack>
   );
 
+  const renderTertiary = assignment && (
+    <Stack component={Card} spacing={2} sx={{ p: 3, mt: 4 }}>
+      <Typography variant="h5">Nhận đơn</Typography>
+      <Box display="flex" alignItems="center">
+        <Avatar
+          alt={assignment.houseWorker.name}
+          src={`${ASSETS_API}/${assignment.houseWorker.avatar}`}
+          variant='circular'
+          sx={{ mr: 2, width: 40, height: 40 }}
+        />
+        <ListItemText
+          primary={assignment.houseWorker.name}
+          secondary={assignment.houseWorker.username}
+          primaryTypographyProps={{
+            variant: 'body2',
+          }}
+          secondaryTypographyProps={{
+            component: 'span',
+          }}
+        />
+      </Box>
+      <Typography variant="body2">Tuổi: {assignment.houseWorker.age}</Typography>
+      <Typography variant="body2">Giới tính: {assignment.houseWorker.gender === 'FEMALE' ? 'Nữ' : 'Nam'}</Typography>
+      <Typography variant="body2">Ngày nhận lịch: {fDateTime(assignment.assignedTime)}</Typography>
+    </Stack>
+  );
+
 
   return (
     <Grid container spacing={3}>
@@ -226,6 +248,7 @@ export default function BookingDetailsContent({ booking }) {
 
       <Grid xs={12} md={5}>
         {renderSecondary}
+        {assignment && renderTertiary}
       </Grid>
     </Grid>
   );

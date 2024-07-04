@@ -74,7 +74,7 @@ export default function PackageItem({ serviceId, packageService, onDelete }) {
               <>
                 <Iconify width={16} icon="material-symbols:cancel-outline" color='red' />
                 <Typography variant="caption" noWrap>
-                  Đang hoạt động
+                  Không hoạt động
                 </Typography>
               </>
             )}

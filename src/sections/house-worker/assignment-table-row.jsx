@@ -1,20 +1,12 @@
-import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale'
 
-import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
-import Paper from '@mui/material/Paper';
 import TableRow from '@mui/material/TableRow';
-import Collapse from '@mui/material/Collapse';
 import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 import ListItemText from '@mui/material/ListItemText';
 import MenuItem from '@mui/material/MenuItem';
-
-
-import { useBoolean } from 'src/hooks/use-boolean';
 
 import Iconify from 'src/components/iconify';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
@@ -29,8 +21,6 @@ export default function AssignmentTableRow({ row, onViewRow }) {
   const { customer } = address;
   const { service } = bookingPackage[0].package
   const transformStatus = colorStatus(status);
-
-  const collapse = useBoolean();
 
   const popover = usePopover();
 

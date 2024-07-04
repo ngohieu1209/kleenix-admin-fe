@@ -89,6 +89,7 @@ export default function BookingDetailsView({ id }) {
       <BookingDetailsToolbar
         backLink={paths.dashboard.booking.root}
         onChangeStatus={() => onChangeStatus(id)}
+        status={booking.status}
       />
       <Box
         display='flex'

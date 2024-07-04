@@ -67,7 +67,7 @@ export async function updatePromotion(promotionId, eventData) {
 
   const formData = new FormData();
   formData.append('name', eventData.name);
-  formData.append('icon', eventData.image);
+  formData.append('image', eventData.image);
   formData.append('description', eventData.description);
   formData.append('activate', eventData.activate);
 

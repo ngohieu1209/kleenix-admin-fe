@@ -39,6 +39,8 @@ const ICONS = {
   calendar: image('calendar'),
   broom: image('broom'),
   promotion: image('promotion'),
+  analytics: image('report'),
+  feedback: image('feedback'),
 };
 
 // ----------------------------------------------------------------------
@@ -48,10 +50,22 @@ export function useNavData() {
 
   const data = useMemo(
     () => [
+            // OVERVIEW
+      // ----------------------------------------------------------------------
+      {
+        subheader: t('Chung'),
+        items: [
+          {
+            title: t('Tổng quan'),
+            path: paths.dashboard.general.analytics,
+            icon: ICONS.analytics,
+          },
+        ],
+      },
       // MANAGEMENT
       // ----------------------------------------------------------------------
       {
-        subheader: t('management'),
+        subheader: t('Quản lý'),
         items: [
           // SERVICE
           {
@@ -82,6 +96,12 @@ export function useNavData() {
             title: t('Khuyến mãi'),
             path: paths.dashboard.promotion.root,
             icon: ICONS.promotion,
+          },
+          // FEEDBACK
+          {
+            title: t('Đánh giá'),
+            path: paths.dashboard.feedback.root,
+            icon: ICONS.feedback,
           },
         ],
       },

@@ -6,6 +6,7 @@ import { useRouter } from 'src/routes/hooks';
 
 import { SplashScreen } from 'src/components/loading-screen';
 
+import { connectWithSocketServer, socketDisconnect } from 'src/socket/socket-connection';
 import { useAuthContext } from '../hooks';
 
 // ----------------------------------------------------------------------
@@ -25,7 +26,7 @@ AuthGuard.propTypes = {
 function Container({ children }) {
   const router = useRouter();
 
-  const { authenticated } = useAuthContext();
+  const { authenticated, user } = useAuthContext();
 
   const [checked, setChecked] = useState(false);
 
@@ -34,8 +35,12 @@ function Container({ children }) {
       router.replace(paths.auth.classic.login);
     } else {
       setChecked(true);
+      connectWithSocketServer(user.id);
     }
-  }, [authenticated, router]);
+    return () => {
+      socketDisconnect();
+    }
+  }, [authenticated, router, user]);
 
   useEffect(() => {
     check();

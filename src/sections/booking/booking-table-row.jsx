@@ -1,41 +1,29 @@
 import PropTypes from 'prop-types';
 
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
-import Collapse from '@mui/material/Collapse';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 import ListItemText from '@mui/material/ListItemText';
 import Avatar from '@mui/material/Avatar';
-import Checkbox from '@mui/material/Checkbox';
 
-import { useBoolean } from 'src/hooks/use-boolean';
-
-import { fDate, fMinutesToHours } from 'src/utils/format-time';
+import { fDate } from 'src/utils/format-time';
 import { fCurrency } from 'src/utils/format-number';
 
 import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
-import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import { ASSETS_API } from 'src/config-global';
 import colorStatus from 'src/utils/color-status';
+import { fCodeBooking } from 'src/utils/format-string';
 
 // ----------------------------------------------------------------------
 
 export default function BookingTableRow({ row, onViewRow }) {
-  const { createdAt, dateTime, totalPrice, status, address, bookingPackage } = row;
-  const customer = address.customer;
-  const service = bookingPackage[0].package.service
+  const { id, createdAt, totalPrice, status, address, bookingPackage } = row;
+  const { customer } = address;
+  const { service } = bookingPackage[0].package
   const transformStatus = colorStatus(status);
-
-  const confirm = useBoolean();
-
-  const collapse = useBoolean();
 
   const popover = usePopover();
 
@@ -44,7 +32,7 @@ export default function BookingTableRow({ row, onViewRow }) {
       <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
         <Avatar
           alt={customer.name}
-          // src={`${ASSETS_API}/${icon}`}
+          src={`${ASSETS_API}/${customer.avatar}`}
           variant='rounded'
           sx={{ mr: 2 }}
         />
@@ -59,6 +47,7 @@ export default function BookingTableRow({ row, onViewRow }) {
           }}
         />
       </TableCell>
+      <TableCell>#{fCodeBooking(id)}</TableCell>
       <TableCell sx={{ whiteSpace: 'break-spaces' }}>{service.name}</TableCell>
       <TableCell>
         <ListItemText

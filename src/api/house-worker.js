@@ -64,7 +64,7 @@ export async function createHouseWorker(eventData) {
   const URLcreate = endpoints.houseWorker.new;
   const formData = new FormData();
   formData.append('name', eventData.name);
-  // formData.append('icon', eventData.icon);
+  formData.append('avatar', eventData.avatar);
   formData.append('username', eventData.username);
   formData.append('password', eventData.password);
   formData.append('gender', eventData.gender);
@@ -81,7 +81,7 @@ export async function updateHouseWorker(houseWorkerId, eventData) {
 
   const formData = new FormData();
   formData.append('name', eventData.name);
-  // formData.append('icon', eventData.icon);
+  formData.append('avatar', eventData.avatar);
   formData.append('username', eventData.username);
   formData.append('gender', eventData.gender);
   formData.append('age', eventData.age);
@@ -109,4 +109,17 @@ export async function deleteHouseWorker(houseWorkerId) {
       result: newResult,
     };
   });
+}
+
+export async function resetPassword(eventData, houseWorkerId) {
+  const URL = endpoints.houseWorker.resetPassword;
+  const data = {
+    houseWorkerId,
+    newPassword: eventData.password,
+  }
+  try {
+    await axios.post(URL, data)
+  } catch (error) {
+    await Promise.reject(new Error('Đặt mật khẩu thất bại'))
+  }
 }

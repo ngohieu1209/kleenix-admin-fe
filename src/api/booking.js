@@ -1,4 +1,3 @@
-// import _ from 'lodash';
 import { useMemo } from 'react';
 import useSWR, { mutate } from 'swr';
 
@@ -44,6 +43,15 @@ export function useGetBooking(bookingId) {
 
 export async function updateStatus(bookingId, eventData) {
   const URLupdate = bookingId ? `${endpoints.booking.root}/${bookingId}` : '';
+  const URLdetail = bookingId ? `${endpoints.booking.detail}/${bookingId}` : '';
 
-  console.log('winter-eventData', eventData);
+  await axios.patch(URLupdate, eventData);
+
+  mutate(URLdetail, (currentData) => ({
+    ...currentData,
+    result: {
+      ...currentData.result,
+      ...eventData,
+    },
+  }));
 }

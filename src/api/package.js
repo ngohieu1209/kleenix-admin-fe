@@ -24,7 +24,7 @@ export async function createPackage(serviceId, eventData) {
 export async function updatePackage(serviceId, packageId, eventData) {
   const URLupdate = packageId ? `${endpoints.package.root}/${packageId}` : '';
   const URLDetailService = serviceId ? `${endpoints.service.detail}/${serviceId}` : '';
-
+  console.log('winter-eventData', eventData)
   await axios.patch(URLupdate, eventData);
 
   mutate(URLDetailService, (currentData) => {
