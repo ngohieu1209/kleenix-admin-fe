@@ -35,7 +35,7 @@ import AssignmentTableFiltersResult from './assignment-table-filters-result';
 const TABLE_HEAD = [
   { id: 'name', label: 'Dịch vụ' },
   { id: 'customer', label: 'Khách hàng', width: 200 },
-  { id: 'dateTime', label: 'Ngày nhận booking', width: 180 },
+  { id: 'dateTime', label: 'Ngày nhận đơn', width: 180 },
   { id: 'status', label: 'Trạng thái', width: 100 },
   { id: '', width: 55 },
 ];

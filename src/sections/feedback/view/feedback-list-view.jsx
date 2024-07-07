@@ -1,6 +1,7 @@
 import isEqual from 'lodash/isEqual';
 import { endOfDay, startOfDay } from 'date-fns';
 import { useState, useEffect, useCallback } from 'react';
+import _ from 'lodash';
 
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
@@ -103,6 +104,32 @@ export default function FeedbackListView() {
     setFilters(defaultFilters);
   }, []);
 
+  useEffect(() => {
+    const savedPage = parseInt(sessionStorage.getItem("feedback-page"), 10) - 1;
+    const savedRowsPerPage = parseInt(sessionStorage.getItem("feedback-rows"), 10);
+
+    if (!_.isNaN(savedPage) && savedPage >= 0) {
+      table.onChangePage(null, savedPage);
+    }
+
+    if (!_.isNaN(savedRowsPerPage) && savedRowsPerPage > 0) {
+      table.setRowsPerPage(savedRowsPerPage);
+    }
+  }, [table]);
+
+  const handlePageChange = (event, newPage) => {
+    table.onChangePage(event, newPage);
+    sessionStorage.setItem("feedback-page", newPage + 1);
+  };
+
+  const handleRowsPerPageChange = (event) => {
+    const newRowsPerPage = parseInt(event.target.value, 10);
+    table.onChangeRowsPerPage(event, newRowsPerPage);
+    sessionStorage.setItem("feedback-rows", newRowsPerPage);
+    table.onChangePage(null, 0);
+    sessionStorage.setItem("feedback-page", 1);
+  };
+
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
@@ -168,8 +195,8 @@ export default function FeedbackListView() {
           count={dataFiltered.length}
           page={table.page}
           rowsPerPage={table.rowsPerPage}
-          onPageChange={table.onChangePage}
-          onRowsPerPageChange={table.onChangeRowsPerPage}
+          onPageChange={handlePageChange}
+          onRowsPerPageChange={handleRowsPerPageChange}
         />
       </Card>
     </Container>
@@ -193,24 +220,23 @@ function applyFilter({ inputData, comparator, filters, dateError }) {
 
   if (!dateError) {
     if (startDate && endDate) {
+      sessionStorage.removeItem("feedback-page");
       inputData = inputData.filter(
-        (booking) =>
-          fTimestamp(booking.createdAt) >= fTimestamp(startOfDay(startDate)) &&
-          fTimestamp(booking.createdAt) <= fTimestamp(endOfDay(endDate))
+        (feedback) =>
+          fTimestamp(feedback.createdAt) >= fTimestamp(startOfDay(startDate)) &&
+          fTimestamp(feedback.createdAt) <= fTimestamp(endOfDay(endDate))
       )
     } else if(startDate) {
+      sessionStorage.removeItem("feedback-page");
       inputData = inputData.filter(
-        (booking) => fTimestamp(booking.createdAt) >= fTimestamp(startOfDay(startDate))
+        (feedback) => fTimestamp(feedback.createdAt) >= fTimestamp(startOfDay(startDate))
       )
     } else if(endDate) {
+      sessionStorage.removeItem("feedback-page");
       inputData = inputData.filter(
-        (booking) => fTimestamp(booking.createdAt) <= fTimestamp(endOfDay(endDate))
+        (feedback) => fTimestamp(feedback.createdAt) <= fTimestamp(endOfDay(endDate))
       )
     }
-  }
-
-  if (status !== 'all') {
-    inputData = inputData.filter((booking) => booking.status.includes(status.toUpperCase()));
   }
 
   return inputData;

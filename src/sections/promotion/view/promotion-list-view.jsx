@@ -124,6 +124,32 @@ export default function PromotionListView() {
     setFilters(defaultFilters);
   }, []);
 
+  useEffect(() => {
+    const savedPage = parseInt(sessionStorage.getItem("promotion-page"), 10) - 1;
+    const savedRowsPerPage = parseInt(sessionStorage.getItem("promotion-rows"), 10);
+
+    if (!_.isNaN(savedPage) && savedPage >= 0) {
+      table.onChangePage(null, savedPage);
+    }
+
+    if (!_.isNaN(savedRowsPerPage) && savedRowsPerPage > 0) {
+      table.setRowsPerPage(savedRowsPerPage);
+    }
+  }, [table]);
+
+  const handlePageChange = (event, newPage) => {
+    table.onChangePage(event, newPage);
+    sessionStorage.setItem("promotion-page", newPage + 1);
+  };
+
+  const handleRowsPerPageChange = (event) => {
+    const newRowsPerPage = parseInt(event.target.value, 10);
+    table.onChangeRowsPerPage(event, newRowsPerPage);
+    sessionStorage.setItem("promotion-rows", newRowsPerPage);
+    table.onChangePage(null, 0);
+    sessionStorage.setItem("promotion-page", 1);
+  };
+
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
@@ -200,8 +226,8 @@ export default function PromotionListView() {
           count={dataFiltered.length}
           page={table.page}
           rowsPerPage={table.rowsPerPage}
-          onPageChange={table.onChangePage}
-          onRowsPerPageChange={table.onChangeRowsPerPage}
+          onPageChange={handlePageChange}
+          onRowsPerPageChange={handleRowsPerPageChange}
         />
       </Card>
     </Container>
@@ -225,6 +251,7 @@ function applyFilter({ inputData, comparator, filters }) {
   inputData = stabilizedThis.map((el) => el[0]);
 
   if (name) {
+    sessionStorage.removeItem("promotion-page");
     inputData = inputData.filter(
       (promotion) => promotion.name.toLowerCase().indexOf(name.toLowerCase()) !== -1
     );

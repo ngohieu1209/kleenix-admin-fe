@@ -1,5 +1,6 @@
 import isEqual from 'lodash/isEqual';
 import { useState, useEffect, useCallback } from 'react';
+import _ from 'lodash';
 
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
@@ -121,6 +122,32 @@ export default function ServiceListView() {
     setFilters(defaultFilters);
   }, []);
 
+  useEffect(() => {
+    const savedPage = parseInt(sessionStorage.getItem("service-page"), 10) - 1;
+    const savedRowsPerPage = parseInt(sessionStorage.getItem("service-rows"), 10);
+
+    if (!_.isNaN(savedPage) && savedPage >= 0) {
+      table.onChangePage(null, savedPage);
+    }
+
+    if (!_.isNaN(savedRowsPerPage) && savedRowsPerPage > 0) {
+      table.setRowsPerPage(savedRowsPerPage);
+    }
+  }, [table]);
+
+  const handlePageChange = (event, newPage) => {
+    table.onChangePage(event, newPage);
+    sessionStorage.setItem("service-page", newPage + 1);
+  };
+
+  const handleRowsPerPageChange = (event) => {
+    const newRowsPerPage = parseInt(event.target.value, 10);
+    table.onChangeRowsPerPage(event, newRowsPerPage);
+    sessionStorage.setItem("service-rows", newRowsPerPage);
+    table.onChangePage(null, 0);
+    sessionStorage.setItem("service-page", 1);
+  };
+
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
@@ -197,8 +224,8 @@ export default function ServiceListView() {
           count={dataFiltered.length}
           page={table.page}
           rowsPerPage={table.rowsPerPage}
-          onPageChange={table.onChangePage}
-          onRowsPerPageChange={table.onChangeRowsPerPage}
+          onPageChange={handlePageChange}
+          onRowsPerPageChange={handleRowsPerPageChange}
         />
       </Card>
     </Container>
@@ -221,6 +248,7 @@ function applyFilter({ inputData, comparator, filters }) {
   inputData = stabilizedThis.map((el) => el[0]);
 
   if (name) {
+    sessionStorage.removeItem("service-page");
     inputData = inputData.filter(
       (service) => service.name.toLowerCase().indexOf(name.toLowerCase()) !== -1
     );

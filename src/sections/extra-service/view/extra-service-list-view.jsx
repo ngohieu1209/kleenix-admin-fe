@@ -1,5 +1,6 @@
 import isEqual from 'lodash/isEqual';
 import { useState, useEffect, useCallback } from 'react';
+import _ from 'lodash';
 
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
@@ -122,6 +123,32 @@ export default function ExtraServiceListView() {
     setFilters(defaultFilters);
   }, []);
 
+  useEffect(() => {
+    const savedPage = parseInt(sessionStorage.getItem("extra-service-page"), 10) - 1;
+    const savedRowsPerPage = parseInt(sessionStorage.getItem("extra-service-rows"), 10);
+
+    if (!_.isNaN(savedPage) && savedPage >= 0) {
+      table.onChangePage(null, savedPage);
+    }
+
+    if (!_.isNaN(savedRowsPerPage) && savedRowsPerPage > 0) {
+      table.setRowsPerPage(savedRowsPerPage);
+    }
+  }, [table]);
+
+  const handlePageChange = (event, newPage) => {
+    table.onChangePage(event, newPage);
+    sessionStorage.setItem("extra-service-page", newPage + 1);
+  };
+
+  const handleRowsPerPageChange = (event) => {
+    const newRowsPerPage = parseInt(event.target.value, 10);
+    table.onChangeRowsPerPage(event, newRowsPerPage);
+    sessionStorage.setItem("extra-service-rows", newRowsPerPage);
+    table.onChangePage(null, 0);
+    sessionStorage.setItem("extra-service-page", 1);
+  };
+
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
@@ -198,8 +225,8 @@ export default function ExtraServiceListView() {
           count={dataFiltered.length}
           page={table.page}
           rowsPerPage={table.rowsPerPage}
-          onPageChange={table.onChangePage}
-          onRowsPerPageChange={table.onChangeRowsPerPage}
+          onPageChange={handlePageChange}
+          onRowsPerPageChange={handleRowsPerPageChange}
         />
       </Card>
     </Container>
@@ -222,6 +249,7 @@ function applyFilter({ inputData, comparator, filters }) {
   inputData = stabilizedThis.map((el) => el[0]);
 
   if (name) {
+    sessionStorage.removeItem("extra-service-page");
     inputData = inputData.filter(
       (extraService) => extraService.name.toLowerCase().indexOf(name.toLowerCase()) !== -1
     );
